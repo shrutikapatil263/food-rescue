@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Post a Donation{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Post a new donation</h2>
+    <p class="help-text">Fields marked with your food's details help agents and recipients act fast — please be accurate about timing and storage.</p>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <ul class="errorlist">
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <fieldset>
+            <legend>Food details</legend>
+            <div class="field-row">
+                <label for="{{ form.food_name.id_for_label }}">Food name</label>
+                {{ form.food_name }}
+                {% if form.food_name.errors %}<ul class="errorlist">{% for e in form.food_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            <div class="two-col">
+                <div class="field-row">
+                    <label for="{{ form.quantity_kg.id_for_label }}">Quantity (kg)</label>
+                    {{ form.quantity_kg }}
+                    {% if form.quantity_kg.errors %}<ul class="errorlist">{% for e in form.quantity_kg.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+                <div class="field-row">
+                    <label for="{{ form.estimated_servings.id_for_label }}">Estimated servings</label>
+                    {{ form.estimated_servings }}
+                    {% if form.estimated_servings.errors %}<ul class="errorlist">{% for e in form.estimated_servings.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+            </div>
+            <div class="two-col">
+                <div class="field-row">
+                    <label for="{{ form.food_category.id_for_label }}">Food category</label>
+                    {{ form.food_category }}
+                </div>
+                <div class="field-row">
+                    <label for="{{ form.storage_condition.id_for_label }}">Storage condition</label>
+                    {{ form.storage_condition }}
+                </div>
+            </div>
+            <div class="field-row">
+                <label for="{{ form.food_image.id_for_label }}">Photo (optional)</label>
+                {{ form.food_image }}
+                <p class="help-text">A clear photo helps agents and recipients trust the listing.</p>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Timing</legend>
+            <div class="two-col">
+                <div class="field-row">
+                    <label for="{{ form.prepared_at.id_for_label }}">Prepared at</label>
+                    {{ form.prepared_at }}
+                    {% if form.prepared_at.errors %}<ul class="errorlist">{% for e in form.prepared_at.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+                <div class="field-row">
+                    <label for="{{ form.pickup_deadline.id_for_label }}">Pickup deadline</label>
+                    {{ form.pickup_deadline }}
+                    {% if form.pickup_deadline.errors %}<ul class="errorlist">{% for e in form.pickup_deadline.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+            </div>
+            <p class="help-text">Deadline must be after the prepared time — this is when agents need to have picked it up by.</p>
+        </fieldset>
+
+        <fieldset>
+            <legend>Location</legend>
+            <div class="field-row">
+                <label for="{{ form.pickup_address.id_for_label }}">Pickup address</label>
+                {{ form.pickup_address }}
+                {% if form.pickup_address.errors %}<ul class="errorlist">{% for e in form.pickup_address.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            <div class="field-row">
+                <label for="{{ form.delivery_address.id_for_label }}">Delivery address (optional)</label>
+                {{ form.delivery_address }}
+            </div>
+        </fieldset>
+
+        <button type="submit">Post donation</button>
+    </form>
+</div>
+{% endblock %}

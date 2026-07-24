@@ -1,0 +1,27 @@
+<!-- Place at: templates/donations/dashboard.html -->
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h2>Welcome, {{ restaurant.name }}</h2>
+<a href="{% url 'donation_create' %}" class="btn">+ Post a new donation</a>
+
+<h3 style="margin-top:32px;">Your donations</h3>
+
+{% if donations %}
+    {% for donation in donations %}
+    <div class="card status-{{ donation.status }}">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>{{ donation.food_name }}</strong>
+            <span class="status status-{{ donation.status }}">{{ donation.get_status_display }}</span>
+        </div>
+        <p style="color:var(--muted); font-size:14px; margin:6px 0;">
+            {{ donation.quantity_kg }} kg &middot; {{ donation.estimated_servings }} servings
+            &middot; posted {{ donation.posted_at|date:"M d, H:i" }}
+        </p>
+        <a href="{% url 'donation_detail' donation.pk %}">View details →</a>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="empty-state">You haven't posted any donations yet — post your first one above.</div>
+{% endif %}
+{% endblock %}

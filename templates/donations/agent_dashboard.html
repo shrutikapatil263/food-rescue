@@ -1,0 +1,41 @@
+<!-- Place at: templates/donations/agent_dashboard.html -->
+{% extends "base.html" %}
+{% block title %}Agent Dashboard{% endblock %}
+{% block content %}
+<h2>Welcome, {{ agent.name }}</h2>
+<p style="color:var(--muted);">Availability: <strong style="color:var(--forest);">{{ agent.availability_status }}</strong> &middot; Completed deliveries: {{ agent.completed_deliveries }}</p>
+
+<h3 style="margin-top:32px;">Your assigned deliveries</h3>
+
+{% if donations %}
+    {% for donation in donations %}
+    <div class="card status-{{ donation.status }}">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>{{ donation.food_name }}</strong>
+            <span class="status status-{{ donation.status }}">{{ donation.get_status_display }}</span>
+        </div>
+        <p style="color:var(--muted); font-size:14px; margin:6px 0;">
+            {{ donation.quantity_kg }} kg &middot; {{ donation.estimated_servings }} servings
+        </p>
+        <p style="font-size:14px;"><strong>Pickup:</strong> {{ donation.pickup_address }}</p>
+        <p style="font-size:14px;"><strong>Deliver to:</strong> {{ donation.delivery_address|default:"—" }}</p>
+
+        {% if donation.status == 'assigned' %}
+            <form method="post" action="{% url 'agent_update_status' donation.pk %}" style="margin-top:12px;">
+                {% csrf_token %}
+                <input type="hidden" name="new_status" value="picked_up">
+                <button type="submit">Mark Picked Up</button>
+            </form>
+        {% elif donation.status == 'picked_up' %}
+            <form method="post" action="{% url 'agent_update_status' donation.pk %}" style="margin-top:12px;">
+                {% csrf_token %}
+                <input type="hidden" name="new_status" value="delivered">
+                <button type="submit">Mark Delivered</button>
+            </form>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="empty-state">No deliveries assigned to you right now.</div>
+{% endif %}
+{% endblock %}

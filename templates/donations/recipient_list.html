@@ -1,0 +1,24 @@
+<!-- Place at: templates/donations/recipient_list.html -->
+{% extends "base.html" %}
+{% block title %}NGOs & Shelters{% endblock %}
+{% block content %}
+<a href="{% url 'home' %}">← Back to home</a>
+<h2 style="margin-top:16px;">NGOs & Shelters</h2>
+<p style="color:var(--muted); margin-bottom:28px;">{{ recipients|length }} organization{{ recipients|length|pluralize }} receiving rescued food.</p>
+
+{% if recipients %}
+<div class="directory-grid">
+    {% for recipient in recipients %}
+    <div class="card directory-card">
+        <div class="directory-logo-placeholder">{{ recipient.name|first|upper }}</div>
+        <strong>{{ recipient.name }}</strong>
+        <p style="font-size:13px; color:var(--muted); margin:4px 0 0;">
+            Serves up to {{ recipient.capacity_people }} people
+        </p>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+    <div class="empty-state">No NGOs registered yet.</div>
+{% endif %}
+{% endblock %}

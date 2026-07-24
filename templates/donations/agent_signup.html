@@ -1,0 +1,14 @@
+<!-- Place at: templates/donations/agent_signup.html -->
+{% extends "base.html" %}
+{% block title %}Agent sign up{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Delivery agent sign up</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create account</button>
+    </form>
+    <p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+</div>
+{% endblock %}

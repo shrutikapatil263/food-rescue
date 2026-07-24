@@ -1,0 +1,24 @@
+<!-- Place at: templates/donations/agent_list.html -->
+{% extends "base.html" %}
+{% block title %}Delivery Agents{% endblock %}
+{% block content %}
+<a href="{% url 'home' %}">← Back to home</a>
+<h2 style="margin-top:16px;">Delivery Agents</h2>
+<p style="color:var(--muted); margin-bottom:28px;">{{ agents|length }} agent{{ agents|length|pluralize }} helping food reach its destination.</p>
+
+{% if agents %}
+<div class="directory-grid">
+    {% for agent in agents %}
+    <div class="card directory-card">
+        <div class="directory-logo-placeholder">{{ agent.name|first|upper }}</div>
+        <strong>{{ agent.name }}</strong>
+        <p style="font-size:13px; color:var(--muted); margin:4px 0 0;">
+            {{ agent.completed_deliveries }} deliveries completed
+        </p>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+    <div class="empty-state">No delivery agents registered yet.</div>
+{% endif %}
+{% endblock %}

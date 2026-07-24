@@ -1,0 +1,41 @@
+<!-- Place at: templates/donations/donation_detail.html -->
+{% extends "base.html" %}
+{% block title %}{{ donation.food_name }}{% endblock %}
+{% block content %}
+<a href="{% url 'dashboard' %}">← Back to dashboard</a>
+
+<div class="card status-{{ donation.status }}" style="margin-top:16px;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 style="margin:0;">{{ donation.food_name }}</h2>
+        <span class="status status-{{ donation.status }}">{{ donation.get_status_display }}</span>
+    </div>
+
+    <p><strong>Quantity:</strong> {{ donation.quantity_kg }} kg ({{ donation.estimated_servings }} servings)</p>
+    <p><strong>Category:</strong> {{ donation.food_category }} &middot; <strong>Storage:</strong> {{ donation.storage_condition }}</p>
+    <p><strong>Pickup address:</strong> {{ donation.pickup_address }}</p>
+    <p><strong>Delivery address:</strong> {{ donation.delivery_address|default:"—" }}</p>
+    <p><strong>Pickup deadline:</strong> {{ donation.pickup_deadline|date:"M d, Y H:i" }}</p>
+
+    {% if donation.assigned_agent %}
+        <p><strong>Assigned agent:</strong> {{ donation.assigned_agent.name }} ({{ donation.assigned_agent.phone_number }})</p>
+    {% else %}
+        <p><strong>Assigned agent:</strong> Not yet assigned</p>
+    {% endif %}
+
+    {% if donation.recipient %}
+        <p><strong>Claimed by:</strong> {{ donation.recipient.name }}</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Activity log</h3>
+    {% for log in donation.assignmentlog_set.all %}
+        <p style="font-size:14px; color:var(--ink);">
+            <strong>{{ log.action }}</strong> — {{ log.notes }}
+            <br><span style="color:var(--muted);">{{ log.created_at|date:"M d, H:i" }}</span>
+        </p>
+    {% empty %}
+        <p style="color:var(--muted);">No activity yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

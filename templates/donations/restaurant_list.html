@@ -1,0 +1,28 @@
+<!-- Place at: templates/donations/restaurant_list.html -->
+{% extends "base.html" %}
+{% block title %}Restaurants{% endblock %}
+{% block content %}
+<a href="{% url 'home' %}">← Back to home</a>
+<h2 style="margin-top:16px;">Restaurants on Food Rescue</h2>
+<p style="color:var(--muted); margin-bottom:28px;">{{ restaurants|length }} restaurant{{ restaurants|length|pluralize }} donating surplus food.</p>
+
+{% if restaurants %}
+<div class="directory-grid">
+    {% for restaurant in restaurants %}
+    <div class="card directory-card">
+        {% if restaurant.logo %}
+            <img src="{{ restaurant.logo.url }}" alt="{{ restaurant.name }}" class="directory-logo">
+        {% else %}
+            <div class="directory-logo-placeholder">{{ restaurant.name|first|upper }}</div>
+        {% endif %}
+        <strong>{{ restaurant.name }}</strong>
+        {% if restaurant.cuisine_type %}
+            <p style="font-size:13px; color:var(--muted); margin:4px 0 0;">{{ restaurant.cuisine_type }}</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+    <div class="empty-state">No restaurants registered yet.</div>
+{% endif %}
+{% endblock %}

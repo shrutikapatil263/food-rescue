@@ -1,0 +1,54 @@
+<!-- Place at: templates/donations/recipient_dashboard.html -->
+{% extends "base.html" %}
+{% block title %}Recipient Dashboard{% endblock %}
+{% block content %}
+<h2>Welcome, {{ recipient.name }}</h2>
+<p style="color:var(--muted);">Capacity: {{ recipient.capacity_people }} people</p>
+
+<h3 style="margin-top:32px;">Available donations near you</h3>
+
+{% if available_donations %}
+    {% for donation in available_donations %}
+    <div class="card status-{{ donation.status }}">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>{{ donation.food_name }}</strong>
+            <span class="status status-{{ donation.status }}">{{ donation.get_status_display }}</span>
+        </div>
+        <p style="color:var(--muted); font-size:14px; margin:6px 0;">
+            {{ donation.quantity_kg }} kg &middot; {{ donation.estimated_servings }} servings
+            &middot; from {{ donation.restaurant.name }}
+        </p>
+        <p style="font-size:14px;"><strong>Pickup:</strong> {{ donation.pickup_address }}</p>
+        <p style="font-size:14px;"><strong>Deadline:</strong> {{ donation.pickup_deadline|date:"M d, H:i" }}</p>
+
+        <form method="post" action="{% url 'recipient_claim' donation.pk %}" style="margin-top:12px;">
+            {% csrf_token %}
+            <button type="submit">Claim this donation</button>
+        </form>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="empty-state">No open donations right now — check back soon.</div>
+{% endif %}
+
+<h3 style="margin-top:40px;">Your claimed donations</h3>
+
+{% if my_donations %}
+    {% for donation in my_donations %}
+    <div class="card status-{{ donation.status }}">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>{{ donation.food_name }}</strong>
+            <span class="status status-{{ donation.status }}">{{ donation.get_status_display }}</span>
+        </div>
+        <p style="color:var(--muted); font-size:14px; margin:6px 0;">
+            {{ donation.quantity_kg }} kg &middot; from {{ donation.restaurant.name }}
+        </p>
+        {% if donation.assigned_agent %}
+            <p style="font-size:14px;"><strong>Agent:</strong> {{ donation.assigned_agent.name }} ({{ donation.assigned_agent.phone_number }})</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="empty-state">You haven't claimed any donations yet.</div>
+{% endif %}
+{% endblock %}

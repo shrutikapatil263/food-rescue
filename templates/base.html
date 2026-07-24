@@ -1,0 +1,231 @@
+<!-- Place at: templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Food Rescue{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1C231C;
+            --paper: #FAF9F4;
+            --forest: #1F3D2B;
+            --forest-dark: #142A1D;
+            --marigold: #E8A33D;
+            --marigold-dark: #C87F1F;
+            --line: #E1DFD5;
+            --muted: #6B7268;
+            --white: #FFFFFF;
+
+            --pending-bg: #FBEFD8; --pending-fg: #92600D;
+            --assigned-bg: #E1E9F5; --assigned-fg: #2B4A8A;
+            --pickedup-bg: #EAE3F7; --pickedup-fg: #5B3A9E;
+            --delivered-bg: #E1EEE1; --delivered-fg: #1F5C31;
+            --cancelled-bg: #F8E2E0; --cancelled-fg: #A3392E;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.5;
+        }
+
+        h1, h2, h3 { font-family: 'Poppins', system-ui, sans-serif; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 8px; }
+        h2 { font-size: 28px; }
+        h3 { font-size: 19px; color: var(--forest); margin-top: 0; }
+
+        nav {
+            background: var(--forest-dark);
+            color: var(--white);
+            padding: 16px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav .brand {
+            font-family: 'Poppins', system-ui, sans-serif;
+            font-weight: 700;
+            font-size: 19px;
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+        nav a {
+            color: rgba(255,255,255,0.82);
+            text-decoration: none;
+            margin-left: 22px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.15s ease;
+        }
+        nav a:hover, nav a:focus-visible { color: var(--marigold); }
+
+        main { max-width: 880px; margin: 40px auto; padding: 0 20px 60px; }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--line);
+            border-radius: 10px;
+            padding: 20px 22px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 2px rgba(28, 35, 28, 0.04);
+        }
+        .card.status-pending { border-left-color: var(--pending-fg); }
+        .card.status-assigned { border-left-color: var(--assigned-fg); }
+        .card.status-picked_up { border-left-color: var(--pickedup-fg); }
+        .card.status-delivered { border-left-color: var(--delivered-fg); }
+        .card.status-cancelled, .card.status-expired { border-left-color: var(--cancelled-fg); }
+
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .status-pending { background: var(--pending-bg); color: var(--pending-fg); }
+        .status-assigned { background: var(--assigned-bg); color: var(--assigned-fg); }
+        .status-picked_up { background: var(--pickedup-bg); color: var(--pickedup-fg); }
+        .status-delivered { background: var(--delivered-bg); color: var(--delivered-fg); }
+        .status-cancelled, .status-expired { background: var(--cancelled-bg); color: var(--cancelled-fg); }
+
+        .stat-link { text-decoration: none; display: block; flex: 1; min-width: 140px; }
+        .stat-link .card { transition: transform 0.15s ease, box-shadow 0.15s ease; cursor: pointer; }
+        .stat-link:hover .card { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(28, 35, 28, 0.10); }
+
+        .directory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+        .directory-card { text-align: center; }
+        .directory-logo {
+            width: 64px; height: 64px; border-radius: 50%; object-fit: cover;
+            margin: 0 auto 10px; display: block; border: 2px solid var(--line);
+        }
+        .directory-logo-placeholder {
+            width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 10px;
+            background: var(--forest); color: var(--white); display: flex;
+            align-items: center; justify-content: center; font-family: 'Poppins', sans-serif;
+            font-weight: 700; font-size: 22px;
+        }
+
+        .empty-state {
+            border: 1px dashed var(--line);
+            border-radius: 10px;
+            padding: 32px 20px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 14px;
+            background: rgba(255,255,255,0.5);
+        }
+
+        .messages { list-style: none; padding: 0; margin: 0 0 20px; }
+        .messages li {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .messages .success { background: var(--delivered-bg); color: var(--delivered-fg); }
+        .messages .error { background: var(--cancelled-bg); color: var(--cancelled-fg); }
+        .messages .info { background: var(--assigned-bg); color: var(--assigned-fg); }
+
+        form p { margin-bottom: 16px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 13px; color: var(--forest); }
+        input, select, textarea {
+            width: 100%;
+            padding: 9px 11px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 14px;
+            background: var(--white);
+            color: var(--ink);
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--forest);
+            box-shadow: 0 0 0 3px rgba(31, 61, 43, 0.12);
+        }
+        .helptext { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+        button, .btn {
+            background: var(--forest);
+            color: var(--white);
+            border: none;
+            padding: 11px 20px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.15s ease, transform 0.1s ease;
+        }
+        button:hover, .btn:hover { background: var(--forest-dark); }
+        button:active, .btn:active { transform: translateY(1px); }
+        button:focus-visible, .btn:focus-visible, a:focus-visible {
+            outline: 2px solid var(--marigold);
+            outline-offset: 2px;
+        }
+
+        .errorlist {
+            list-style: none;
+            padding: 0;
+            margin: 4px 0 0;
+            color: #A3392E;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        a { color: var(--forest); }
+        a:hover { color: var(--marigold-dark); }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { transition: none !important; animation: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'home' %}" style="text-decoration:none;"><p class="brand">🍽 Food Rescue</p></a>
+        <div>
+            {% if user.is_authenticated %}
+                {% if user.restaurant %}
+                    <a href="{% url 'dashboard' %}">Dashboard</a>
+                    <a href="{% url 'donation_create' %}">Post Donation</a>
+                {% elif user.agent %}
+                    <a href="{% url 'agent_dashboard' %}">My Deliveries</a>
+                {% elif user.recipient %}
+                    <a href="{% url 'recipient_dashboard' %}">Browse Donations</a>
+                {% endif %}
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'signup' %}">Restaurant Sign up</a>
+                <a href="{% url 'agent_signup' %}">Agent Sign up</a>
+                <a href="{% url 'recipient_signup' %}">NGO Sign up</a>
+            {% endif %}
+        </div>
+    </nav>
+    <main>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

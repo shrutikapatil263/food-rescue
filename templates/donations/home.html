@@ -1,0 +1,111 @@
+<!-- Place at: templates/donations/home.html -->
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Food Rescue — Rescue Food. Feed Lives.{% endblock %}
+{% block content %}
+
+<div style="display:flex; align-items:center; gap:36px; flex-wrap:wrap; padding:24px 0 12px;">
+    <div style="flex:1.1; min-width:280px;">
+        <span style="display:inline-block; background:var(--pending-bg); color:var(--pending-fg); padding:6px 16px; border-radius:20px; font-size:13px; font-weight:600; margin-bottom:18px;">
+             Together, we can end food waste and hunger
+        </span>
+        <h2 style="font-size:40px; line-height:1.12; margin-bottom:14px;">Rescue Food.<br><span style="color:var(--forest);">Feed Lives.</span></h2>
+        <p style="color:var(--muted); font-size:16px; max-width:420px; margin:0 0 24px;">
+            Food Rescue connects restaurants, delivery agents, and NGOs to save surplus food
+            and get it to the people who need it most.
+        </p>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'post_login_redirect' %}" class="btn">Go to my dashboard</a>
+        {% else %}
+            <a href="{% url 'signup' %}" class="btn">Get started as a restaurant</a>
+        {% endif %}
+    </div>
+
+    <div style="flex:1; min-width:260px; position:relative;">
+        <img src="{% static 'img/hero-food-rescue.png' %}" alt="Volunteer delivering a box of rescued food"
+             style="width:100%; border-radius:18px; display:block; box-shadow:0 12px 28px rgba(28,35,28,0.18);">
+
+        <!-- Floating live-stat card, overlapping the photo -->
+        <div style="position:absolute; bottom:-18px; left:-18px; background:var(--white); border-radius:12px; padding:14px 18px; box-shadow:0 8px 20px rgba(28,35,28,0.14); border:1px solid var(--line);">
+            <div style="font-family:'Poppins',sans-serif; font-size:22px; font-weight:800; color:var(--forest);">{{ total_kg|floatformat:0 }} kg+</div>
+            <div style="font-size:12px; color:var(--muted);">Meals rescued and counting…</div>
+        </div>
+    </div>
+</div>
+
+<!-- Live impact stats, pulled straight from the database -->
+<div class="card" style="margin-top:56px; background:var(--forest); border-color:var(--forest); color:var(--white); text-align:center;">
+    <p style="text-transform:uppercase; letter-spacing:0.08em; font-size:12px; color:var(--marigold); font-weight:700; margin-bottom:14px;">Real-time impact</p>
+    <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:20px;">
+        <div>
+            <div style="font-family:'Poppins',sans-serif; font-size:32px; font-weight:800;">{{ total_kg|floatformat:0 }} kg</div>
+            <div style="font-size:13px; color:rgba(255,255,255,0.75);">Food rescued</div>
+        </div>
+        <div>
+            <div style="font-family:'Poppins',sans-serif; font-size:32px; font-weight:800;">{{ total_servings }}</div>
+            <div style="font-size:13px; color:rgba(255,255,255,0.75);">Servings delivered</div>
+        </div>
+        <div>
+            <div style="font-family:'Poppins',sans-serif; font-size:32px; font-weight:800;">{{ total_deliveries }}</div>
+            <div style="font-size:13px; color:rgba(255,255,255,0.75);">Completed deliveries</div>
+        </div>
+    </div>
+</div>
+
+<!-- Who's on the platform — each block links to a directory page -->
+<div style="display:flex; gap:16px; margin-top:16px; flex-wrap:wrap;">
+    <a href="{% url 'restaurant_list' %}" class="stat-link">
+        <div class="card" style="text-align:center;">
+            <div style="font-family:'Poppins',sans-serif; font-size:24px; color:var(--forest); font-weight:800;">{{ restaurant_count }}</div>
+            <div style="font-size:13px; color:var(--muted);">Restaurants</div>
+        </div>
+    </a>
+    <a href="{% url 'agent_list' %}" class="stat-link">
+        <div class="card" style="text-align:center;">
+            <div style="font-family:'Poppins',sans-serif; font-size:24px; color:var(--forest); font-weight:800;">{{ agent_count }}</div>
+            <div style="font-size:13px; color:var(--muted);">Delivery agents</div>
+        </div>
+    </a>
+    <a href="{% url 'recipient_list' %}" class="stat-link">
+        <div class="card" style="text-align:center;">
+            <div style="font-family:'Poppins',sans-serif; font-size:24px; color:var(--forest); font-weight:800;">{{ recipient_count }}</div>
+            <div style="font-size:13px; color:var(--muted);">NGOs & shelters</div>
+        </div>
+    </a>
+</div>
+
+<!-- How it works -->
+<div style="text-align:center; margin-top:52px;">
+    <p style="text-transform:uppercase; letter-spacing:0.08em; font-size:12px; color:var(--marigold-dark); font-weight:700;">How it works</p>
+    <h3 style="font-size:24px;">Simple steps, big impact</h3>
+</div>
+
+<div style="display:flex; gap:14px; margin-top:22px; flex-wrap:wrap;">
+    <div class="card" style="flex:1; min-width:150px;">
+        <strong style="color:var(--forest);">1. Food donated</strong>
+        <p style="font-size:13px; color:var(--muted); margin-top:6px;">Restaurants post surplus food in minutes.</p>
+    </div>
+    <div class="card" style="flex:1; min-width:150px;">
+        <strong style="color:var(--forest);">2. Picked up</strong>
+        <p style="font-size:13px; color:var(--muted); margin-top:6px;">Agents pick up the food safely and quickly.</p>
+    </div>
+    <div class="card" style="flex:1; min-width:150px;">
+        <strong style="color:var(--forest);">3. Delivered</strong>
+        <p style="font-size:13px; color:var(--muted); margin-top:6px;">Food reaches NGOs and community kitchens.</p>
+    </div>
+    <div class="card" style="flex:1; min-width:150px;">
+        <strong style="color:var(--forest);">4. Lives impacted</strong>
+        <p style="font-size:13px; color:var(--muted); margin-top:6px;">Nutritious meals reach the people who need them.</p>
+    </div>
+</div>
+
+{% if not user.is_authenticated %}
+<div style="text-align:center; margin-top:44px; padding-bottom:12px;">
+    <p style="color:var(--muted); font-size:14px; margin-bottom:14px;">Not a restaurant? Join as an agent or NGO instead.</p>
+    <a href="{% url 'agent_signup' %}" class="btn" style="background:var(--marigold-dark); margin-right:10px;">Sign up as an agent</a>
+    <a href="{% url 'recipient_signup' %}" class="btn" style="background:var(--forest-dark);">Sign up as an NGO</a>
+</div>
+{% endif %}
+
+{% endblock %}
